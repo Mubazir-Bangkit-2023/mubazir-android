@@ -5,6 +5,7 @@ import androidx.navigation.compose.composable
 import com.foodwaste.mubazir.presentation.articles.ArticlesScreen
 import com.foodwaste.mubazir.presentation.browse.BrowseScreen
 import com.foodwaste.mubazir.presentation.home.HomeScreen
+import com.foodwaste.mubazir.presentation.notification.NotificationScreen
 import com.foodwaste.mubazir.presentation.profile.ProfileScreen
 
 
@@ -47,6 +48,17 @@ sealed class Route(protected val route: String) {
         context(NavGraphBuilder)
         fun composable() = composable(route) {
             ProfileScreen(LocalNavController.current)
+        }
+
+        operator fun invoke() = route
+
+    }
+
+    object Notification : Route("notification") {
+
+        context(NavGraphBuilder)
+        fun composable() = composable(route) {
+            NotificationScreen(LocalNavController.current)
         }
 
         operator fun invoke() = route
