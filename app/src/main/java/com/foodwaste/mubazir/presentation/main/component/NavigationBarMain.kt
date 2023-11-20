@@ -55,7 +55,7 @@ fun NavigationBarMain(
                             Icon(
                                 imageVector = if (selected) filled else outlined,
                                 contentDescription = null,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
                             )
                         },
                         label = {
