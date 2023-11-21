@@ -48,57 +48,6 @@ val NavMenus = listOf(
     )
 )
 
-//@Composable
-//fun MainScreen(
-//    navController: NavHostController,
-//) {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(MaterialTheme.colorScheme.background)
-//    ) {
-//        val currentBackStack by navController.currentBackStackEntryAsState()
-//        val isBotNavVisible by remember {
-//            val screenWithBotNav = NavMenus.map { it.third }
-//
-//            derivedStateOf {
-//                when (currentBackStack?.destination?.route) {
-//                    in screenWithBotNav -> true
-//                    else -> false
-//                }
-//            }
-//        }
-//
-//        Column(modifier = Modifier.weight(1F)) {
-//            CompositionLocalProvider(LocalNavController provides navController) {
-//
-//                AnimatedVisibility(
-//                    visible = true,
-//                    enter = fadeIn() + slideInVertically(),
-//                    exit = fadeOut() + slideOutVertically()
-//                ) {
-//                    NavGraph(
-//                        startDestination = Route.Home(),
-//                        navController = navController
-//                    )
-//                }
-//            }
-//        }
-//        NavigationBarMain(
-//            onNavigation = { route ->
-//                navController.navigate(route) {
-//                    popUpTo(Route.Home()) { saveState = true }
-//                    launchSingleTop = true
-//                    restoreState = true
-//                }
-//            },
-//            botNavVisibilityProvider = { isBotNavVisible },
-//            currentRouteProvider = { route ->
-//                currentBackStack?.destination?.hierarchy?.any { it.route == route } == true
-//            }
-//        )
-//    }
-//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -172,9 +121,3 @@ fun MainScreen(
         }
     }
 }
-
-//@Preview(showBackground = true, device = Devices.PIXEL_4)
-//@Composable
-//fun MainScreenPreview() {
-//    MainScreen(navController = rememberNavController())
-//}
