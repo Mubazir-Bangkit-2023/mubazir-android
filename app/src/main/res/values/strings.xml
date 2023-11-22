@@ -5,4 +5,5 @@
     <string name="text_article">Article</string>
     <string name="text_profile">Profile</string>
     <string name="text_your_location">Your Location</string>
+    <string name="text_nearby_surplus_food">Nearby Surplus Food</string>
 </resources>
