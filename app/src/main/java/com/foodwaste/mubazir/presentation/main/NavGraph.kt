@@ -19,6 +19,10 @@ fun NavGraph(
         Route.Articles.composable()
         Route.Profile.composable()
         Route.Notification.composable()
+        Route.AddPost.composable()
+        Route.Maps.composable()
+        Route.SignIn.composable()
+        Route.SignUp.composable()
     }
 }
 

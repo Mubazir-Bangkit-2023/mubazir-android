@@ -18,8 +18,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foodwaste.mubazir.presentation.main.NavMenus
 
@@ -38,7 +42,12 @@ fun NavigationBarMain(
         Column {
             NavigationBar(
                 tonalElevation = 4.dp,
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.shadow(
+                    elevation = 24.dp,
+
+                )
+
             ) {
                 for (menu in NavMenus) {
                     val (title, icons, route) = menu
@@ -64,18 +73,29 @@ fun NavigationBarMain(
                     )
                 }
             }
-            Surface(tonalElevation = 4.dp) {
-                val density = LocalDensity.current
-                val navigationBarHeight = with(density) {
-                    WindowInsets.navigationBars.getBottom(density).toDp()
-                }
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(navigationBarHeight)
-                )
-            }
+//            Surface(tonalElevation = 8.dp) {
+//                val density = LocalDensity.current
+//                val navigationBarHeight = with(density) {
+//                    WindowInsets.navigationBars.getBottom(density).toDp()
+//                }
+//
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(20.dp)
+//                        .shadow(16.dp)
+//                )
+//            }
         }
     }
+}
+
+@Preview(showBackground = true, device = Devices.PIXEL_3, showSystemUi = true)
+@Composable
+fun NavigationBarMainPreview() {
+    NavigationBarMain(
+        onNavigation = {},
+        botNavVisibilityProvider = { true },
+        currentRouteProvider = { true }
+    )
 }

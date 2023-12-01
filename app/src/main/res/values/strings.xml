@@ -6,4 +6,25 @@
     <string name="text_profile">Profile</string>
     <string name="text_your_location">Your Location</string>
     <string name="text_nearby_surplus_food">Nearby Surplus Food</string>
+    <string name="text_search_surplus_food">Search Surplus Food</string>
+    <string name="text_filter">Filter</string>
+    <string name="text_reset">Reset</string>
+    <string name="text_disctance_from_your_location">Distance from your location</string>
+    <string name="text_radius">Radius</string>
+    <string name="text_maximum_price">Maximum price</string>
+    <string name="text_apply">Apply</string>
+    <string name="text_placeholder_rp">"Rp "</string>
+    <string name="text_free">Free</string>
+    <string name="text_km">KM</string>
+    <string name="text_under_1km"><![CDATA[< 1KM]]></string>
+    <string name="text_maps_view">Maps View</string>
+    <string name="text_add_post">Add Post</string>
+    <string name="text_signin">Sign In</string>
+    <string name="text_email">Email</string>
+    <string name="text_password">Password</string>
+    <string name="text_dont_have_account">Don\'t have an account?</string>
+    <string name="text_signup">Sign Up</string>
+    <string name="text_confirm_password">Confirm Password</string>
+    <string name="text_full_name">Full Name</string>
+    <string name="text_already_have_an_account">Already have an account?</string>
 </resources>

@@ -113,7 +113,7 @@ fun MainScreen(
                     exit = fadeOut() + slideOutVertically()
                 ) {
                     NavGraph(
-                        startDestination = Route.Home(),
+                        startDestination = Route.SignIn(),
                         navController = navController
                     )
                 }
