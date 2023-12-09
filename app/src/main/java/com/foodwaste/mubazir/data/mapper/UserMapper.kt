@@ -25,3 +25,14 @@ fun UserResponse.toEntity(): UserEntity {
         token = token
     )
 }
+
+fun UserEntity.toModel(): User {
+    return User(
+        id = id,
+        name = name,
+        email = email,
+        noHp = noHp,
+        photo = photo,
+        token = token
+    )
+}

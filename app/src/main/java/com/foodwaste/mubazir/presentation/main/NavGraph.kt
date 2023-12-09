@@ -16,7 +16,6 @@ fun NavGraph(
     ) {
         Route.Home.composable()
         Route.Browse.composable()
-        Route.Articles.composable()
         Route.Profile.composable()
         Route.Notification.composable()
         Route.AddPost.composable()

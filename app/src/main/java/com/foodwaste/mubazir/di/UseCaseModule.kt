@@ -2,6 +2,7 @@ package com.foodwaste.mubazir.di
 
 import com.foodwaste.mubazir.R
 import com.foodwaste.mubazir.domain.repository.UserRepository
+import com.foodwaste.mubazir.domain.usecase.GetUserUseCase
 import com.foodwaste.mubazir.domain.usecase.SignInUseCase
 import com.foodwaste.mubazir.domain.usecase.SignUpUseCase
 import com.foodwaste.mubazir.domain.usecase.ValidateEmailUseCase
@@ -69,6 +70,12 @@ object UseCaseModule {
     @ViewModelScoped
     fun provideSignUpUseCase(userRepository: UserRepository): SignUpUseCase {
         return SignUpUseCase(userRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetUserUseCase(userRepository: UserRepository): GetUserUseCase {
+        return GetUserUseCase(userRepository)
     }
 
 }

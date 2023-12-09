@@ -73,19 +73,6 @@ fun NavigationBarMain(
                     )
                 }
             }
-//            Surface(tonalElevation = 8.dp) {
-//                val density = LocalDensity.current
-//                val navigationBarHeight = with(density) {
-//                    WindowInsets.navigationBars.getBottom(density).toDp()
-//                }
-//
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(20.dp)
-//                        .shadow(16.dp)
-//                )
-//            }
         }
     }
 }

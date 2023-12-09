@@ -6,9 +6,11 @@ import com.foodwaste.mubazir.data.mapper.toModel
 import com.foodwaste.mubazir.data.remote.UserRemoteDataSource
 import com.foodwaste.mubazir.data.remote.payload.SignInRequest
 import com.foodwaste.mubazir.data.remote.payload.SignUpRequest
-import com.foodwaste.mubazir.data.remote.payload.SignUpResponse
+import com.foodwaste.mubazir.data.remote.payload.MessageResponse
 import com.foodwaste.mubazir.domain.model.User
 import com.foodwaste.mubazir.domain.repository.UserRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class DefaultUserRepository(
     private val userLocalDataSource: UserLocalDataSource,
@@ -20,7 +22,7 @@ class DefaultUserRepository(
         email: String,
         noHp: String,
         password: String
-    ): SignUpResponse {
+    ): MessageResponse {
         val req = SignUpRequest(
             name = name,
             email = email,
@@ -38,5 +40,9 @@ class DefaultUserRepository(
         val res = userRemoteDataSource.signIn(req)
         userLocalDataSource.save(res.toEntity())
         return res.toModel()
+    }
+
+    override fun getUser(): Flow<User?> {
+        return userLocalDataSource.getUser().map { it?.toModel() }
     }
 }

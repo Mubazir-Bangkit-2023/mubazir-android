@@ -12,23 +12,37 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import com.foodwaste.mubazir.R
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
     SearchBar(
         query = query,
         onQueryChange = onQueryChange,
-        onSearch = {},
+        onSearch = {
+            keyboardController?.hide()
+            focusManager.clearFocus()
+        },
         active = false,
-        onActiveChange = {},
+        onActiveChange = {newActiveState ->
+            if (!newActiveState) {
+                keyboardController?.hide()
+                focusManager.clearFocus()
+            }
+        },
         leadingIcon = {
             Icon(imageVector = Icons.Filled.Search, contentDescription = null)
         },

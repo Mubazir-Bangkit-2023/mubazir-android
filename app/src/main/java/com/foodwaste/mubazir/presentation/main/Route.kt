@@ -36,17 +36,6 @@ sealed class Route(protected val route: String) {
 
     }
 
-    object Articles : Route("articles") {
-
-        context(NavGraphBuilder)
-        fun composable() = composable(route) {
-            ArticlesScreen(LocalNavController.current)
-        }
-
-        operator fun invoke() = route
-
-    }
-
     object Profile : Route("profile") {
 
         context(NavGraphBuilder)

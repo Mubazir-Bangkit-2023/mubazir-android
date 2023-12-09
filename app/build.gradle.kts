@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.jetbrains.kotlin.gradle.plugin.extraProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -25,7 +28,10 @@ android {
     buildTypes {
 
         debug {
-            buildConfigField("String", "BACKEND_BASE_URL", "\"https://api.themoviedb.org/3/\"")
+            //Backend base url
+            val baseUrl : String = gradleLocalProperties(rootDir).getProperty("backend_base_url")
+            buildConfigField("String", "BACKEND_BASE_URL", "\"$baseUrl\"")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -92,9 +98,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
     //Dagger hilt
-    implementation("com.google.dagger:hilt-android:2.42")
-    kapt("com.google.dagger:hilt-android-compiler:2.42")
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
     kapt("androidx.hilt:hilt-compiler:1.1.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 

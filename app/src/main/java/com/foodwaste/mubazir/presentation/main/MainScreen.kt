@@ -9,17 +9,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ManageSearch
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Article
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.ManageSearch
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -32,6 +32,7 @@ import com.foodwaste.mubazir.R
 import com.foodwaste.mubazir.presentation.main.component.NavigationBarMain
 import com.foodwaste.mubazir.presentation.main.component.TopBarBasic
 import com.foodwaste.mubazir.presentation.main.component.TopBarMain
+import kotlinx.coroutines.flow.StateFlow
 
 val NavMenus = listOf(
     Triple(R.string.text_home, Icons.Outlined.Home to Icons.Filled.Home, Route.Home()),
@@ -40,7 +41,7 @@ val NavMenus = listOf(
         Icons.Outlined.ManageSearch to Icons.Filled.ManageSearch,
         Route.Browse()
     ),
-    Triple(R.string.text_article, Icons.Outlined.Article to Icons.Filled.Article, Route.Articles()),
+    Triple(R.string.text_maps, Icons.Outlined.Map to Icons.Filled.Map, Route.Maps()),
     Triple(
         R.string.text_profile,
         Icons.Outlined.AccountCircle to Icons.Filled.AccountCircle,
@@ -49,10 +50,10 @@ val NavMenus = listOf(
 )
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navController: NavHostController,
+    loggedInState: StateFlow<Boolean?>,
 ) {
 
     val currentBackStack by navController.currentBackStackEntryAsState()
@@ -76,9 +77,9 @@ fun MainScreen(
                 )
             } else {
                 when (currentBackStack?.destination?.route) {
-                    Route.Articles() -> TopBarBasic(
+                    Route.Maps() -> TopBarBasic(
                         navController = navController,
-                        title = stringResource(id = R.string.text_article),
+                        title = stringResource(id = R.string.text_maps),
                     )
 
                     Route.Profile() -> TopBarBasic(
@@ -107,13 +108,15 @@ fun MainScreen(
         Column(modifier = Modifier.padding(it)) {
             CompositionLocalProvider(LocalNavController provides navController) {
 
+                val isLoggedIn by loggedInState.collectAsState()
+
                 AnimatedVisibility(
                     visible = true,
                     enter = fadeIn() + slideInVertically(),
                     exit = fadeOut() + slideOutVertically()
                 ) {
                     NavGraph(
-                        startDestination = Route.SignIn(),
+                        startDestination = if (isLoggedIn == true) Route.Home() else Route.SignIn(),
                         navController = navController
                     )
                 }

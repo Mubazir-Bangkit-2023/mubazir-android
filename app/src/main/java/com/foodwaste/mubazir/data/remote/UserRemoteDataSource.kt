@@ -2,7 +2,7 @@ package com.foodwaste.mubazir.data.remote
 
 import com.foodwaste.mubazir.data.remote.payload.SignInRequest
 import com.foodwaste.mubazir.data.remote.payload.SignUpRequest
-import com.foodwaste.mubazir.data.remote.payload.SignUpResponse
+import com.foodwaste.mubazir.data.remote.payload.MessageResponse
 import com.foodwaste.mubazir.data.remote.payload.UserResponse
 import com.foodwaste.mubazir.data.remote.service.UserService
 import okhttp3.ResponseBody
@@ -11,7 +11,7 @@ import org.json.JSONObject
 class UserRemoteDataSource(
     private val userService: UserService
 ) {
-    suspend fun signUp(req: SignUpRequest): SignUpResponse {
+    suspend fun signUp(req: SignUpRequest): MessageResponse {
         val res = userService.signUp(req)
         val data = res.takeIf { it.isSuccessful }?.body()
         if (data == null) {

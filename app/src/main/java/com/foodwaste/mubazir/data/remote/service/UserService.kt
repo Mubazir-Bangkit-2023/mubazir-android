@@ -3,7 +3,7 @@ package com.foodwaste.mubazir.data.remote.service
 import com.foodwaste.mubazir.data.remote.payload.Api
 import com.foodwaste.mubazir.data.remote.payload.SignInRequest
 import com.foodwaste.mubazir.data.remote.payload.SignUpRequest
-import com.foodwaste.mubazir.data.remote.payload.SignUpResponse
+import com.foodwaste.mubazir.data.remote.payload.MessageResponse
 import com.foodwaste.mubazir.data.remote.payload.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -15,7 +15,7 @@ interface UserService {
     suspend fun signUp(
         @Body
         req: SignUpRequest
-    ): Response<SignUpResponse>
+    ): Response<MessageResponse>
 
     @POST("auth/login")
     suspend fun signIn(

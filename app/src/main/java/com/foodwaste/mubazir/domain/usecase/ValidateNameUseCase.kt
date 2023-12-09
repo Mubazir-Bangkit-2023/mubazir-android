@@ -14,7 +14,7 @@ class ValidateNameUseCase(
 ) {
 
     operator fun invoke(name: String): Int? {
-        val nameRegex = "[a-zA-Z]+\\s[a-zA-Z]+".toRegex()
+        val nameRegex = "^[a-zA-Z]+(?:[a-zA-Z]+)*$".toRegex()
         if(!name.matches(nameRegex)) return errorNameFormatMessage
 
         if (name.isBlank()) return errorBlankMessage
