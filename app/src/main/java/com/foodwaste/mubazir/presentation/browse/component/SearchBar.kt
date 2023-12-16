@@ -24,7 +24,8 @@ import com.foodwaste.mubazir.R
 fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onFilterClick: () -> Unit
+    onFilterClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -57,7 +58,7 @@ fun SearchBar(
             }
         },
         colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier
     ) {
 
     }

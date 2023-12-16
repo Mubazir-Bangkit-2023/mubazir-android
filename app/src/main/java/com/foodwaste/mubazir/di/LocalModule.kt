@@ -2,8 +2,10 @@ package com.foodwaste.mubazir.di
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.room.Room
 import com.foodwaste.mubazir.data.local.UserLocalDataSource
 import com.foodwaste.mubazir.data.local.datastore.UserPreferences
+import com.foodwaste.mubazir.data.local.room.FoodPostDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,5 +31,15 @@ object LocalModule {
     @Singleton
     fun provideUserLocalDataSource(userPreferences: UserPreferences): UserLocalDataSource {
         return UserLocalDataSource(userPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun providePostDatabase(@ApplicationContext context: Context): FoodPostDatabase {
+        return Room.databaseBuilder(
+            context,
+            FoodPostDatabase::class.java,
+            "post_db"
+        ).build()
     }
 }

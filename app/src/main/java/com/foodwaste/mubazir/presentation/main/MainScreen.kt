@@ -54,6 +54,9 @@ val NavMenus = listOf(
 fun MainScreen(
     navController: NavHostController,
     loggedInState: StateFlow<Boolean?>,
+    locationState: StateFlow<String>,
+    refreshAddress: () -> Unit,
+    locationLoadingState: StateFlow<Boolean>,
 ) {
 
     val currentBackStack by navController.currentBackStackEntryAsState()
@@ -68,26 +71,26 @@ fun MainScreen(
         }
     }
 
+    val location by locationState.collectAsState()
+    val locationLoading by locationLoadingState.collectAsState()
+
     Scaffold(
         topBar = {
-            if (currentBackStack?.destination?.route == Route.Home() || currentBackStack?.destination?.route == Route.Browse()) {
+            if (currentBackStack?.destination?.route == Route.Home() || currentBackStack?.destination?.route == Route.Browse() || currentBackStack?.destination?.route == Route.Maps()) {
                 TopBarMain(
                     navController = navController,
-                    address = "Kedungkandang, Malang"
+                    address = location,
+                    onCLickAddress = refreshAddress,
+                    isAddressLoading = locationLoading
                 )
-            } else {
-                when (currentBackStack?.destination?.route) {
-                    Route.Maps() -> TopBarBasic(
-                        navController = navController,
-                        title = stringResource(id = R.string.text_maps),
-                    )
-
-                    Route.Profile() -> TopBarBasic(
-                        navController = navController,
-                        title = stringResource(id = R.string.text_profile),
-                    )
-                }
+            } else if (currentBackStack?.destination?.route == Route.Profile()) {
+                TopBarBasic(
+                    navController = navController,
+                    title = stringResource(id = R.string.text_profile),
+                )
             }
+
+
         },
         bottomBar = {
             NavigationBarMain(
@@ -117,6 +120,7 @@ fun MainScreen(
                 ) {
                     NavGraph(
                         startDestination = if (isLoggedIn == true) Route.Home() else Route.SignIn(),
+//                        startDestination = Route.Detail("mubazir-1234"),
                         navController = navController
                     )
                 }

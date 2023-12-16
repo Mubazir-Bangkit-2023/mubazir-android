@@ -1,5 +1,6 @@
 package com.foodwaste.mubazir.data
 
+import android.location.Location
 import com.foodwaste.mubazir.data.local.UserLocalDataSource
 import com.foodwaste.mubazir.data.mapper.toEntity
 import com.foodwaste.mubazir.data.mapper.toModel
@@ -44,5 +45,17 @@ class DefaultUserRepository(
 
     override fun getUser(): Flow<User?> {
         return userLocalDataSource.getUser().map { it?.toModel() }
+    }
+
+    override suspend fun signOut() {
+        userLocalDataSource.delete()
+    }
+
+    override suspend fun setStoredLocation(location: Location) {
+        userLocalDataSource.setStoredLocation(location)
+    }
+
+    override suspend fun getStoredLocation(): Flow<Location?> {
+        return userLocalDataSource.getStoredLocation()
     }
 }

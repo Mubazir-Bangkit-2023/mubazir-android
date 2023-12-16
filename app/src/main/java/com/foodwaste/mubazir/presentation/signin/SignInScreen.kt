@@ -135,7 +135,7 @@ fun SignInScreen(
                     .align(Alignment.Center),
                 shape = RoundedCornerShape(15.dp),
                 colors = CardDefaults.elevatedCardColors(
-                    containerColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.surface
                 ),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 5.dp

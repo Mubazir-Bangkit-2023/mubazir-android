@@ -1,6 +1,7 @@
 package com.foodwaste.mubazir.presentation.addpost
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ import com.foodwaste.mubazir.presentation.addpost.component.CheckFreshnessBottom
 import com.foodwaste.mubazir.presentation.addpost.component.DatePickerDialog
 import com.foodwaste.mubazir.presentation.addpost.component.FieldBox
 import com.foodwaste.mubazir.presentation.addpost.component.ImageLoader
+import com.foodwaste.mubazir.presentation.addpost.component.LocationFieldBox
 import com.foodwaste.mubazir.presentation.addpost.component.TimePickerDialog
 import com.foodwaste.mubazir.presentation.common.TimeUtils
 import kotlinx.coroutines.flow.StateFlow
@@ -53,14 +55,20 @@ fun AddPostScreen(
     viewModel: AddPostViewModel = hiltViewModel()
 ) {
     AddPostScreen(
+        onBackPressed = {
+            //Back to previous page
+            navController.popBackStack()
+        },
         uri = viewModel.uri,
         onChangeUri = viewModel::onChangeUri,
+        onDeleteImage = viewModel::onDeleteImage,
         titleFieldState = viewModel.titleFieldState,
         onChangeTitle = viewModel::onChangeTitle,
         categoryState = viewModel.categoryState,
         onChangeCategory = viewModel::onChangeCategory,
         selectedCategoryId = viewModel.categoryId,
         freshnessState = viewModel.freshnessState,
+        freshnessLoading = viewModel.freshnessLoading,
         getFreshnessResult = viewModel::getFreshnessResult,
         priceFieldState = viewModel.priceFieldState,
         onChangePrice = viewModel::onChangePrice,
@@ -68,24 +76,30 @@ fun AddPostScreen(
         onConfirmDatePicker = viewModel::onConfirmDatePicker,
         timePickerState = viewModel.timePickerState,
         onConfirmTimePicker = viewModel::onConfirmTimePicker,
-        locationFieldState = viewModel.location,
+        locationFieldState = viewModel.locationString,
+        locationLoading = viewModel.locationLoading,
+        onRefreshLocation = viewModel::onRefreshLocation,
         onClickLocationField = viewModel::onClickLocationField,
         descriptionFieldState = viewModel.descriptionFieldState,
         onChangeDescription = viewModel::onChangeDescription,
+        fulFilled = viewModel.fulFilled
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPostScreen(
+    onBackPressed: () -> Unit,
     uri: StateFlow<Uri?>,
     onChangeUri: (Uri?) -> Unit,
+    onDeleteImage: () -> Unit,
     titleFieldState: StateFlow<String>,
     onChangeTitle: (String) -> Unit,
     categoryState: StateFlow<String>,
     onChangeCategory: (String, Int) -> Unit,
     selectedCategoryId: StateFlow<Int>,
     freshnessState: StateFlow<String>,
+    freshnessLoading: StateFlow<Boolean>,
     getFreshnessResult: () -> Unit,
     priceFieldState: StateFlow<String>,
     onChangePrice: (String) -> Unit,
@@ -94,15 +108,20 @@ fun AddPostScreen(
     timePickerState: StateFlow<Int>,
     onConfirmTimePicker: (Int) -> Unit,
     locationFieldState: StateFlow<String>,
+    locationLoading: StateFlow<Boolean>,
+    onRefreshLocation: () -> Unit,
     onClickLocationField: () -> Unit,
     descriptionFieldState: StateFlow<String>,
     onChangeDescription: (String) -> Unit,
+    fulFilled: StateFlow<Boolean>
 ) {
     Scaffold(
         topBar = {
+            val isFulFilled by fulFilled.collectAsState()
             AddPostTopBar(
+                onClickBack = onBackPressed,
                 onClickSubmitButton = {},
-                isSubmitButtonEnabled = false
+                isSubmitButtonEnabled = isFulFilled
             )
         }
     ) { innerPadding ->
@@ -110,7 +129,7 @@ fun AddPostScreen(
 
         //bottom sheet
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-//        val scope = rememberCoroutineScope()
+
         val bottomSheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true
         )
@@ -122,7 +141,7 @@ fun AddPostScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             //Image loader
-            ImageLoader(uri, onChangeUri)
+            ImageLoader(uri, onChangeUri, onDeleteImage)
 
 
             //Title field
@@ -148,9 +167,8 @@ fun AddPostScreen(
 
             //Check freshness only for food ingredient
             val selectedCategory by selectedCategoryId.collectAsState()
-            if (selectedCategory == 3) {
-                val freshness by freshnessState.collectAsState()
-
+            val freshness by freshnessState.collectAsState()
+            AnimatedVisibility(visible = selectedCategory == 3) {
                 FieldBox(
                     value = freshness.ifEmpty { freshness },
                     placeholder = stringResource(id = R.string.text_check_freshness),
@@ -160,6 +178,7 @@ fun AddPostScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+
 
             //Price field
             val price by priceFieldState.collectAsState()
@@ -220,14 +239,19 @@ fun AddPostScreen(
 
             //Location
             val location by locationFieldState.collectAsState()
-            FieldBox(
-                value = location.ifEmpty { "" },
-                placeholder = stringResource(id = R.string.text_location),
-                onClick = {
-                    onClickLocationField()
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
+            val isLocationLoading by locationLoading.collectAsState()
+            Column {
+                Text(text = stringResource(id = R.string.text_location) + ":")
+                Spacer(modifier = Modifier.height(10.dp))
+                LocationFieldBox(
+                    value = location.ifEmpty { "" },
+                    placeholder = stringResource(id = R.string.text_location),
+                    onClick = onClickLocationField,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClickRefresh = onRefreshLocation,
+                    isLocationLoading = isLocationLoading
+                )
+            }
 
             //Description
             val description by descriptionFieldState.collectAsState()
@@ -242,6 +266,8 @@ fun AddPostScreen(
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier.fillMaxWidth(),
             )
+
+            Spacer(modifier = Modifier.height(30.dp))
 
 
             if (openDateDialog) {
@@ -271,6 +297,7 @@ fun AddPostScreen(
                 sheetState = bottomSheetState,
                 uri = uri,
                 freshnessValue = freshnessState,
+                freshnessLoading = freshnessLoading,
                 onClickResultButton = getFreshnessResult
             )
         }

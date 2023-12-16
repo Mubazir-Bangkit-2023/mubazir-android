@@ -1,14 +1,23 @@
 package com.foodwaste.mubazir.di
 
 import com.foodwaste.mubazir.R
+import com.foodwaste.mubazir.domain.repository.FoodPostRepository
 import com.foodwaste.mubazir.domain.repository.UserRepository
+import com.foodwaste.mubazir.domain.usecase.BrowseUseCase
+import com.foodwaste.mubazir.domain.usecase.FoodClassificationUseCase
+import com.foodwaste.mubazir.domain.usecase.GetCurrentLocationUseCase
+import com.foodwaste.mubazir.domain.usecase.GetDetailPostUseCase
+import com.foodwaste.mubazir.domain.usecase.GetStoredLocationUseCase
 import com.foodwaste.mubazir.domain.usecase.GetUserUseCase
+import com.foodwaste.mubazir.domain.usecase.SetStoredLocationUseCase
 import com.foodwaste.mubazir.domain.usecase.SignInUseCase
+import com.foodwaste.mubazir.domain.usecase.SignOutUseCase
 import com.foodwaste.mubazir.domain.usecase.SignUpUseCase
 import com.foodwaste.mubazir.domain.usecase.ValidateEmailUseCase
 import com.foodwaste.mubazir.domain.usecase.ValidateNameUseCase
 import com.foodwaste.mubazir.domain.usecase.ValidatePasswordUseCase
 import com.foodwaste.mubazir.domain.usecase.ValidatePhoneUseCase
+import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -77,5 +86,48 @@ object UseCaseModule {
     fun provideGetUserUseCase(userRepository: UserRepository): GetUserUseCase {
         return GetUserUseCase(userRepository)
     }
+
+    @Provides
+    @ViewModelScoped
+    fun provideSignOutUseCase(userRepository: UserRepository): SignOutUseCase {
+        return SignOutUseCase(userRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetCurrentLocationUseCase(fusedLocationProviderClient: FusedLocationProviderClient): GetCurrentLocationUseCase {
+        return GetCurrentLocationUseCase(fusedLocationProviderClient)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideSetStoredLocationUseCase(userRepository: UserRepository): SetStoredLocationUseCase {
+        return SetStoredLocationUseCase(userRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetStoredLocationUseCase(userRepository: UserRepository): GetStoredLocationUseCase {
+        return GetStoredLocationUseCase(userRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideBrowseUseCase(foodPostRepository: FoodPostRepository): BrowseUseCase {
+        return BrowseUseCase(foodPostRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideFoodClassificationUseCase(foodPostRepository: FoodPostRepository): FoodClassificationUseCase {
+        return FoodClassificationUseCase(foodPostRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetDetailPostUseCase(foodPostRepository: FoodPostRepository): GetDetailPostUseCase {
+        return GetDetailPostUseCase(foodPostRepository)
+    }
+
 
 }

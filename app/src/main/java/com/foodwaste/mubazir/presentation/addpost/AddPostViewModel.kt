@@ -1,13 +1,43 @@
 package com.foodwaste.mubazir.presentation.addpost
 
+import android.content.Context
+import android.location.Location
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foodwaste.mubazir.R
+import com.foodwaste.mubazir.domain.usecase.FoodClassificationUseCase
+import com.foodwaste.mubazir.domain.usecase.GetCurrentLocationUseCase
+import com.foodwaste.mubazir.domain.usecase.GetStoredLocationUseCase
+import com.foodwaste.mubazir.domain.usecase.SetStoredLocationUseCase
+import com.foodwaste.mubazir.presentation.common.ImageUtils
+import com.foodwaste.mubazir.presentation.common.LocationUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class AddPostViewModel @Inject constructor() : ViewModel() {
+class AddPostViewModel @Inject constructor(
+    private val dispatcher: CoroutineDispatcher,
+    private val context: Context,
+    private val foodClassificationUseCase: FoodClassificationUseCase,
+    private val getStoredLocationUseCase: GetStoredLocationUseCase,
+    private val setStoredLocationUseCase: SetStoredLocationUseCase,
+    private val getCurrentLocationUseCase: GetCurrentLocationUseCase
+) : ViewModel() {
 
     private val _uri = MutableStateFlow<Uri?>(Uri.EMPTY)
     val uri = _uri
@@ -24,6 +54,9 @@ class AddPostViewModel @Inject constructor() : ViewModel() {
     private val _freshnessState = MutableStateFlow("")
     val freshnessState = _freshnessState
 
+    private val _freshnessLoading = MutableStateFlow(false)
+    val freshnessLoading = _freshnessLoading
+
     private val _priceFieldState = MutableStateFlow("")
     val priceFieldState = _priceFieldState
 
@@ -33,14 +66,25 @@ class AddPostViewModel @Inject constructor() : ViewModel() {
     private val _timePickerState = MutableStateFlow(0)
     val timePickerState = _timePickerState
 
-    private val _location = MutableStateFlow("")
+    private val _location = MutableStateFlow<Location?>(null)
     val location = _location
+
+    private val _locationString = MutableStateFlow("")
+    val locationString = _locationString
+
+    private val _locationLoading = MutableStateFlow(false)
+    val locationLoading = _locationLoading
 
     private val _descriptionFieldState = MutableStateFlow("")
     val descriptionFieldState = _descriptionFieldState
 
     fun onChangeUri(uri: Uri?) {
         _uri.value = uri
+    }
+
+    fun onDeleteImage() {
+        _uri.value = Uri.EMPTY
+        _freshnessState.value = ""
     }
 
     fun onChangeTitle(title: String) {
@@ -52,10 +96,6 @@ class AddPostViewModel @Inject constructor() : ViewModel() {
         _categoryId.value = categoryId
     }
 
-    fun getFreshnessResult() {
-        //TODO getFreshnessUseCase with image uri
-        _freshnessState.value = "Fresh banana"
-    }
 
     fun onChangePrice(price: String) {
         _priceFieldState.value = price
@@ -70,13 +110,106 @@ class AddPostViewModel @Inject constructor() : ViewModel() {
     }
 
     fun onClickLocationField() {
-        //TODO getLccationUseCase
-        _location.value = "Kedung Badak, Bogor"
+        viewModelScope.launch {
+            getStoredLocationUseCase().collect {
+                _location.value = it
+                _locationString.value = LocationUtils.getAddressFromLocation(
+                    _location.value!!.latitude,
+                    _location.value!!.longitude,
+                    context,
+                    dispatcher
+                )
+                Timber.d("onClickLocationField: $it")
+            }
+
+        }
+    }
+
+    fun onRefreshLocation() {
+        viewModelScope.launch {
+            _locationLoading.value = true
+            try {
+                val result = getCurrentLocationUseCase()
+
+                result.onSuccess { location ->
+                    setStoredLocationUseCase(location)
+                    _location.value = location
+                    _locationString.value = LocationUtils.getAddressFromLocation(
+                        _location.value!!.latitude,
+                        _location.value!!.longitude,
+                        context,
+                        dispatcher
+                    )
+                }
+
+                result.onFailure { exception ->
+                    getStoredLocationUseCase().collect {
+                        if (it != null) {
+                            _location.value = it
+                            _locationString.value = LocationUtils.getAddressFromLocation(
+                                it.latitude,
+                                it.longitude,
+                                context,
+                                dispatcher
+                            )
+                        }
+                    }
+                    Timber.e(exception)
+                }
+            } catch (securityException: SecurityException) {
+                Timber.e(securityException)
+            }
+            _locationLoading.value = false
+        }
     }
 
     fun onChangeDescription(description: String) {
         _descriptionFieldState.value = description
     }
+
+    fun getFreshnessResult() {
+        viewModelScope.launch(dispatcher) {
+            _freshnessLoading.value = true
+            if (_uri.value != Uri.EMPTY) {
+                val imageFile = _uri.value?.let { ImageUtils.uriToFile(it, context) }
+
+                val requestImageFile = imageFile?.asRequestBody("image/jpeg".toMediaType())
+                val multipartBody =
+                    requestImageFile?.let { req ->
+                        MultipartBody.Part.createFormData(
+                            "img", imageFile.name,
+                            req
+                        )
+                    }
+                foodClassificationUseCase.invoke(multipartBody!!)
+                    .onSuccess {
+                        _freshnessState.value = it
+                    }
+                    .onFailure {
+                        Timber.e(it)
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.text_failed_get_result),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
+            _freshnessLoading.value = false
+        }
+
+    }
+
+
+    val fulFilled = combine(
+        uri, titleFieldState, categoryId, priceFieldState,
+        datePickerState, timePickerState, location, descriptionFieldState
+    ) { values ->
+        values.all { it != null && it != Uri.EMPTY && it.toString().isNotBlank() }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = false
+    )
 
 
     //filter input for price

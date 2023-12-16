@@ -32,6 +32,9 @@ android {
             val baseUrl : String = gradleLocalProperties(rootDir).getProperty("backend_base_url")
             buildConfigField("String", "BACKEND_BASE_URL", "\"$baseUrl\"")
 
+            val mlModelBaseUrl : String = gradleLocalProperties(rootDir).getProperty("ml_model_url")
+            buildConfigField("String", "ML_MODEL_BASE_URL", "\"$mlModelBaseUrl\"")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -84,6 +87,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material:1.4.0-beta01")
+    implementation("com.google.maps.android:maps-compose:4.3.0")
 
     //Compose dependency
     implementation("androidx.compose.material:material-icons-extended")
@@ -129,6 +134,9 @@ dependencies {
 
     //Timber
     implementation("com.jakewharton.timber:timber:5.0.1")
+
+    //Lottie
+    implementation("com.airbnb.android:lottie-compose:6.0.1")
 
     //test
     testImplementation("junit:junit:4.13.2")

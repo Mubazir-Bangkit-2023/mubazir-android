@@ -52,7 +52,8 @@ import java.io.File
 @Composable
 fun ImageLoader(
     uri: StateFlow<Uri?>,
-    onChangeUri: (Uri?) -> Unit
+    onChangeUri: (Uri?) -> Unit,
+    onDeleteImage: () -> Unit
 ) {
     val context = LocalContext.current
     var hasImage by remember {
@@ -114,7 +115,7 @@ fun ImageLoader(
 
             IconButton(
                 onClick = {
-                    onChangeUri(Uri.EMPTY)
+                    onDeleteImage()
                     hasImage = false
                 }, modifier = Modifier
                     .align(Alignment.TopEnd)

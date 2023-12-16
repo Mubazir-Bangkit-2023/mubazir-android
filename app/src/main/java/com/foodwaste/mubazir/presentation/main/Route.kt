@@ -1,10 +1,12 @@
 package com.foodwaste.mubazir.presentation.main
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.foodwaste.mubazir.presentation.addpost.AddPostScreen
-import com.foodwaste.mubazir.presentation.articles.ArticlesScreen
 import com.foodwaste.mubazir.presentation.browse.BrowseScreen
+import com.foodwaste.mubazir.presentation.detail.DetailScreen
 import com.foodwaste.mubazir.presentation.home.HomeScreen
 import com.foodwaste.mubazir.presentation.maps.MapsScreen
 import com.foodwaste.mubazir.presentation.notification.NotificationScreen
@@ -100,5 +102,25 @@ sealed class Route(protected val route: String) {
 
         operator fun invoke() = route
 
+    }
+
+    object Detail : Route("detail/{$KEY_DETAIL_POST}") {
+        private val arguments = listOf(
+            navArgument(KEY_DETAIL_POST) {
+                type = NavType.StringType
+            }
+        )
+
+        context(NavGraphBuilder)
+        fun composable() = composable(route, arguments) {
+            DetailScreen(LocalNavController.current)
+        }
+
+        operator fun invoke(id: String) = "detail/$id"
+
+    }
+
+    companion object {
+        const val KEY_DETAIL_POST = "detail_post"
     }
 }

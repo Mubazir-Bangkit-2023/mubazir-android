@@ -18,13 +18,14 @@ import com.foodwaste.mubazir.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPostTopBar(
+    onClickBack: () -> Unit,
     onClickSubmitButton: () -> Unit,
     isSubmitButtonEnabled: Boolean
 ) {
     TopAppBar(
-        title = { stringResource(id = R.string.text_post_food) },
+        title = { Text(stringResource(id = R.string.text_post_food)) },
         navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = onClickBack) {
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
             }
         },

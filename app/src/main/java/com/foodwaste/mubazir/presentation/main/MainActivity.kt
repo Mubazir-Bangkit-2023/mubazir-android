@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(navController, viewModel.loggedIn)
+                    MainScreen(navController, viewModel.loggedIn, viewModel.location, viewModel::getCurrentLocation, viewModel.locationLoadingState)
                 }
             }
         }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.FoodBank
 import androidx.compose.material.icons.outlined.HomeWork
 import androidx.compose.material.icons.outlined.RestaurantMenu
 import androidx.compose.material.icons.outlined.Settings
@@ -97,7 +98,7 @@ fun CategoryDropdown(
                 },
                 leadingIcon = {
                     Icon(
-                        Icons.Outlined.HomeWork,
+                        Icons.Outlined.FoodBank,
                         contentDescription = null
                     )
                 })

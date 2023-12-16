@@ -22,6 +22,7 @@ fun NavGraph(
         Route.Maps.composable()
         Route.SignIn.composable()
         Route.SignUp.composable()
+        Route.Detail.composable()
     }
 }
 
