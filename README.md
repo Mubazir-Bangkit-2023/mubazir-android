@@ -1,9 +1,7 @@
 # Mubazir
 ### App Demo
-<div align="center">
-[<img src="https://img.youtube.com/vi/rIC7kYwE3y8/hqdefault.jpg" width="300" height="700"
-/>](https://www.youtube.com/embed/rIC7kYwE3y8)
-</div>
+[<img src="https://i.ytimg.com/vi/rIC7kYwE3y8/maxresdefault.jpg" width="50%">](https://www.youtube.com/watch?v=rIC7kYwE3y8 "Mubazir app demo")
+
 
 ## Installation 🔨
 Clone this repository and import into **Android Studio**
