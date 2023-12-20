@@ -1,8 +1,7 @@
 # Mubazir
 ### App Demo
-<div align="center">
-  [<img src="https://i.ytimg.com/vi/rIC7kYwE3y8/maxresdefault.jpg" width="50%">](https://www.youtube.com/watch?v=rIC7kYwE3y8 "Mubazir app demo")
-</div>
+  [<img src="https://i.ytimg.com/vi/rIC7kYwE3y8/maxresdefault.jpg" width="50%" align="center">](https://www.youtube.com/watch?v=rIC7kYwE3y8 "Mubazir app demo")
+
 
 
 ## Installation 🔨
