@@ -1,9 +1,7 @@
 # Mubazir
-
+### App Demo
 <div align="center">
-  [![App Demo](https://img.youtube.com/vi/rIC7kYwE3y8/hqdefault.jpg)](https://www.youtube.com/embed/rIC7kYwE3y8)
-
-[<img src="https://img.youtube.com/vi/rIC7kYwE3y8/hqdefault.jpg" width="600" height="300"
+[<img src="https://img.youtube.com/vi/rIC7kYwE3y8/hqdefault.jpg" width="300" height="700"
 />](https://www.youtube.com/embed/rIC7kYwE3y8)
 </div>
 
