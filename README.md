@@ -1,6 +1,8 @@
 # Mubazir
 ### App Demo
-<iframe width="560" height="315" src="https://www.youtube.com/embed/rIC7kYwE3y8?si=PFD_xHOKA7idfOAl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<div align="center">
+  [<img src="https://i.ytimg.com/vi/rIC7kYwE3y8/maxresdefault.jpg" width="50%">](https://www.youtube.com/watch?v=rIC7kYwE3y8 "Mubazir app demo")
+</div>
 
 
 ## Installation 🔨
