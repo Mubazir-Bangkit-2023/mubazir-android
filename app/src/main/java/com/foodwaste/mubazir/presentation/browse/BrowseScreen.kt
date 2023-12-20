@@ -27,13 +27,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,7 +41,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.foodwaste.mubazir.domain.model.FoodPost
 import com.foodwaste.mubazir.presentation.browse.component.FilterBottomSheet
-import com.foodwaste.mubazir.presentation.browse.component.FilterRadiusOption
 import com.foodwaste.mubazir.presentation.browse.component.PostCard
 import com.foodwaste.mubazir.presentation.browse.component.SearchBar
 import kotlinx.coroutines.flow.StateFlow
@@ -54,7 +51,6 @@ fun BrowseScreen(
     navController: NavHostController,
     viewModel: BrowseViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val foodPostList : LazyPagingItems<FoodPost> = viewModel.foodPostList.collectAsLazyPagingItems()
 
     BrowseScreen(
@@ -66,7 +62,19 @@ fun BrowseScreen(
         },
         foodPosts = foodPostList,
         isRefreshing = viewModel.isRefreshing,
-        refresh = viewModel::getData
+        refresh = viewModel::onRefresh,
+        searchQuery = viewModel.searchQuery,
+        onQueryChange = viewModel::onQueryChange,
+        loadingState = viewModel.loadingState,
+        onFilterReset = viewModel::onFilterReset,
+        radiusFilterState = viewModel.radiusFilterState,
+        onChangeRadiusFilter = viewModel::onChangeRadiusFilter,
+        maxPriceFilterState = viewModel.maxPriceFilterState,
+        onChangeMaxPriceFilter = viewModel::onChangeMaxPriceFilter,
+        categoryFilterState = viewModel.categoryFilterState,
+        onSelectCategoryFilter = viewModel::onSelectCategoryFilter,
+        onSearch = viewModel::search,
+        onApplyFilter = viewModel::applyFilter
     )
 }
 
@@ -78,9 +86,21 @@ fun BrowseScreen(
     foodPosts: LazyPagingItems<FoodPost>,
     isRefreshing: StateFlow<Boolean>,
     refresh: () -> Unit,
+    searchQuery: StateFlow<String>,
+    onQueryChange: (String) -> Unit,
+    loadingState: StateFlow<Boolean>,
+    onFilterReset: () -> Unit,
+    radiusFilterState: StateFlow<String>,
+    onChangeRadiusFilter: (String) -> Unit,
+    maxPriceFilterState: StateFlow<String>,
+    onChangeMaxPriceFilter: (String) -> Unit,
+    categoryFilterState: StateFlow<String>,
+    onSelectCategoryFilter: (String) -> Unit,
+    onSearch : (String) -> Unit,
+    onApplyFilter: () -> Unit,
 ) {
     //search bar
-    var query by remember { mutableStateOf("") }
+    val query by searchQuery.collectAsState()
 
     //bottom sheet
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -92,20 +112,11 @@ fun BrowseScreen(
     val isRefresh by isRefreshing.collectAsState()
     val pullRefreshState = rememberPullRefreshState(refreshing = isRefresh, onRefresh = refresh)
 
-    //filter
-    var filterRadius by rememberSaveable {
-        mutableStateOf("")
-    }
-    var filterMaxPrice by rememberSaveable {
-        mutableStateOf("")
-    }
-    var isFreeFilterSelected by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var selectedRadius by remember { mutableStateOf<FilterRadiusOption?>(null) }
+
     Box(modifier = Modifier
         .fillMaxSize()
-        .pullRefresh(pullRefreshState)) {
+        .pullRefresh(pullRefreshState)
+    ) {
         LazyColumn(
             contentPadding = PaddingValues(10.dp)
         ) {
@@ -121,10 +132,11 @@ fun BrowseScreen(
                 ) {
                     SearchBar(
                         query = query,
-                        onQueryChange = { query = it },
+                        onQueryChange = onQueryChange,
                         onFilterClick = {
                             openBottomSheet = !openBottomSheet
                         },
+                        onSearch = onSearch,
                         modifier = Modifier.weight(0.8f)
                     )
 
@@ -148,7 +160,6 @@ fun BrowseScreen(
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
-
             items(foodPosts.itemCount) { index ->
                 PostCard(
                     onClickCard = { onClickCard(foodPosts[index]!!.id) },
@@ -160,7 +171,6 @@ fun BrowseScreen(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
-
         }
 
         PullRefreshIndicator(refreshing = isRefresh, state = pullRefreshState,  modifier = Modifier.align(Alignment.TopCenter))
@@ -169,32 +179,20 @@ fun BrowseScreen(
     if (openBottomSheet) {
         FilterBottomSheet(
             onDismiss = { openBottomSheet = false },
-            onReset = {
-                filterRadius = ""
-                filterMaxPrice = ""
-                isFreeFilterSelected = false
-                selectedRadius = null
-            },
-            filterRadius = filterRadius,
-            onRadiusChange = { filterRadius = it },
-            selectedRadius = selectedRadius,
-            onFilterRadiusSelected = {
-                selectedRadius = it
-                filterRadius = it.distance
-            },
-            filterMaxPrice = filterMaxPrice,
-            onMaxPriceChange = { filterMaxPrice = it },
-            isFreeFilterSelected = isFreeFilterSelected,
-            onFreeFilterClick = {
-                isFreeFilterSelected = !isFreeFilterSelected
-                filterMaxPrice = if (isFreeFilterSelected) "0" else ""
-            },
+            onFilterReset = onFilterReset,
+            radiusFilterState = radiusFilterState,
+            onChangeRadiusFilter = onChangeRadiusFilter,
+            maxPriceFilterState = maxPriceFilterState,
+            onChangeMaxPriceFilter = onChangeMaxPriceFilter,
+            categoryFilterState = categoryFilterState,
+            onSelectCategoryFilter = onSelectCategoryFilter,
             onApplyClick = {
                 scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
                     if (!bottomSheetState.isVisible) {
                         openBottomSheet = false
                     }
                 }
+                onApplyFilter()
             }
         )
     }

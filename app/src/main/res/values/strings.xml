@@ -43,7 +43,7 @@
     <string name="text_phone_number_or_whatsapp">Phone number / Whatsapp</string>
     <string name="text_phone_number_format_example">Example: 8123456789</string>
     <string name="error_sign_in">Login Failed</string>
-    <string name="text_post_food">Post Food</string>
+    <string name="text_post_food">Food Post</string>
     <string name="text_publish">Publish</string>
     <string name="text_upload_image">Upload Image</string>
     <string name="text_gallery">Gallery</string>
@@ -99,4 +99,17 @@
 
 
     <string name="google_maps_key" translatable="false">@string/MAPS_API_KEY</string>
+    <string name="text_fill_all_fields">FIll all fields</string>
+    <string name="text_upload_success">Upload Success</string>
+    <string name="text_upload_failed">Upload Failed</string>
+    <string name="text_user_profile">User Profile</string>
+    <string name="text_theme">Theme</string>
+    <string name="text_save">Save</string>
+    <string name="text_light_mode">Light mode</string>
+    <string name="text_dark_mode">Dark mode</string>
+    <string name="text_phone_number">Phone number</string>
+    <string name="text_you">You</string>
+    <string name="text_delete_post">Delete food post</string>
+    <string name="text_delete">Delete</string>
+    <string name="text_no_post">You don\'t have any post</string>
 </resources>

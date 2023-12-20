@@ -10,16 +10,13 @@ import com.foodwaste.mubazir.presentation.common.LocationUtils
 import com.foodwaste.mubazir.presentation.main.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.resume
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foodwaste.mubazir.R
+import com.foodwaste.mubazir.domain.usecase.DarkThemeUseCase
 import com.foodwaste.mubazir.domain.usecase.GetCurrentLocationUseCase
 import com.foodwaste.mubazir.domain.usecase.GetStoredLocationUseCase
 import com.foodwaste.mubazir.domain.usecase.GetUserUseCase
@@ -24,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     getUserUseCase: GetUserUseCase,
+    darkThemeUseCase: DarkThemeUseCase,
     private val dispatcher: CoroutineDispatcher,
     private val context: Context,
     private val getCurrentLocationUseCase: GetCurrentLocationUseCase,
@@ -39,6 +41,10 @@ class MainViewModel @Inject constructor(
 
     val loggedIn = getUserUseCase()
         .map { it != null }
+        .flowOn(dispatcher)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val darkTheme = darkThemeUseCase()
         .flowOn(dispatcher)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 

@@ -68,7 +68,6 @@ import com.foodwaste.mubazir.presentation.common.component.shimmerBrush
 import com.foodwaste.mubazir.presentation.detail.component.Description
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 
 @Composable
 fun DetailScreen(
@@ -182,7 +181,7 @@ fun DetailScreen(
                     //title
                     Column {
                         Text(
-                            text = detailPost?.title ?: "",
+                            text = if(!loading) detailPost?.title ?: "" else "",
                             fontWeight = FontWeight.Bold,
                             fontSize = 22.sp,
                             modifier = Modifier
@@ -228,13 +227,14 @@ fun DetailScreen(
                                     .background(shimmerBrush(showShimmer = loading))
                             )
                             Text(
-                                text =
-                                when (detailPost?.categoryId) {
-                                    1 -> stringResource(id = R.string.text_restaurant_category)
-                                    2 -> stringResource(id = R.string.text_home_food_category)
-                                    3 -> stringResource(id = R.string.text_food_ingredient_category)
-                                    else -> ""
-                                },
+                                text = if (!loading) {
+                                    when (detailPost?.categoryId) {
+                                        1 -> stringResource(id = R.string.text_restaurant_category)
+                                        2 -> stringResource(id = R.string.text_home_food_category)
+                                        3 -> stringResource(id = R.string.text_food_ingredient_category)
+                                        else -> ""
+                                    }
+                                } else "",
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp,
                                 modifier = Modifier
@@ -245,7 +245,7 @@ fun DetailScreen(
                         }
 
                         val address by addressState.collectAsState()
-                        if(address != "") {
+                        if (address != "") {
                             Row {
                                 Text(
                                     text = if (!loading) stringResource(id = R.string.text_location) else "",
@@ -258,7 +258,7 @@ fun DetailScreen(
                                 )
 
                                 Text(
-                                    text = address,
+                                    text = if (!loading) address else "",
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 16.sp,
                                     modifier = Modifier
@@ -279,11 +279,10 @@ fun DetailScreen(
                                     .defaultMinSize(minWidth = 50.dp, minHeight = 10.dp)
                                     .background(shimmerBrush(showShimmer = loading))
                             )
-                            Timber.d("DetailPost: ${detailPost?.pickupTime}")
                             Text(
-                                text = TimeUtils.convertTimestampToString(
+                                text = if(!loading) TimeUtils.convertTimestampToString(
                                     detailPost?.pickupTime
-                                ),
+                                ) else "",
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp,
                                 modifier = Modifier
@@ -304,7 +303,7 @@ fun DetailScreen(
                                         .background(shimmerBrush(showShimmer = loading))
                                 )
                                 Text(
-                                    text = detailPost?.freshness ?: "",
+                                    text = if(!loading) detailPost?.freshness ?: "" else "",
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 16.sp,
                                     modifier = Modifier
@@ -385,27 +384,29 @@ fun DetailScreen(
 
                                 )
                             }
-                            IconButton(
-                                onClick = {
-                                    val url = "https://wa.me/+62${detailPost?.user?.noHp}"
-                                    val i = Intent(Intent.ACTION_VIEW)
-                                    i.data = Uri.parse(url)
-                                    context.startActivity(i)
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary
-                                ),
+                           
+                                IconButton(
+                                    onClick = {
+                                        val url = "https://wa.me/+62${detailPost?.user?.noHp}"
+                                        val i = Intent(Intent.ACTION_VIEW)
+                                        i.data = Uri.parse(url)
+                                        context.startActivity(i)
+                                    },
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary
+                                    ),
 
-                            ) {
-                                if (!loading) {
+                                    ) {
+
                                     Icon(
                                         imageVector = Icons.Outlined.Whatsapp,
                                         contentDescription = "whatsapp",
                                         modifier = Modifier.size(24.dp)
                                     )
+
                                 }
-                            }
+
 
                         }
                     }
@@ -432,11 +433,11 @@ fun DetailScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = if(!loading) PriceUtils.toRupiah(detailPost?.price) else "",
+                        text = if (!loading) PriceUtils.toRupiah(detailPost?.price) else "",
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
                         modifier = Modifier.defaultMinSize(minWidth = 50.dp, minHeight = 20.dp)
-                    .background(shimmerBrush(showShimmer = loading))
+                            .background(shimmerBrush(showShimmer = loading))
                     )
                     Button(onClick = {
                         val gmmIntentUri =

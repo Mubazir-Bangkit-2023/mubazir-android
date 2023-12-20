@@ -10,12 +10,9 @@ import com.foodwaste.mubazir.domain.usecase.BrowseUseCase
 import com.foodwaste.mubazir.domain.usecase.GetStoredLocationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,32 +24,69 @@ class BrowseViewModel @Inject constructor(
     private val _foodPostList = MutableStateFlow<PagingData<FoodPost>>(PagingData.empty())
     val foodPostList: StateFlow<PagingData<FoodPost>>
         get() = _foodPostList.asStateFlow()
+
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean>
         get() = _isRefreshing.asStateFlow()
-//
-//    private val refreshTrigger = MutableStateFlow(Unit)
+
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState = _loadingState.asStateFlow()
 
     private val _location = MutableStateFlow(Location(""))
     val location: StateFlow<Location>
         get() = _location.asStateFlow()
 
-//    val location: StateFlow<Location>
-//        get() {
-//            val location = MutableStateFlow(Location(""))
-//            viewModelScope.launch {
-//                getStoredLocationUseCase().collectLatest {
-//                    if (it != null) {
-//                        location.value = it
-//                    }
-//                }
-//            }
-//            return location
-//        }
+    //search
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String>
+        get() = _searchQuery.asStateFlow()
 
-//    init {
-//        getData()
-//    }
+    fun onQueryChange(query: String) {
+        _searchQuery.value = query
+    }
+
+    //Filter radius
+    private val _radiusFilterState = MutableStateFlow("")
+    val radiusFilterState = _radiusFilterState.asStateFlow()
+
+    fun onChangeRadiusFilter(radius: String) {
+        _radiusFilterState.value = radius
+    }
+
+    //Filter max price
+    private val _maxPriceFilterState = MutableStateFlow("")
+    val maxPriceFilterState = _maxPriceFilterState.asStateFlow()
+
+    fun onChangeMaxPriceFilter(maxPrice: String) {
+        _maxPriceFilterState.value = maxPrice
+    }
+
+    //Filter selected category
+    private val _categoryFilterState = MutableStateFlow("")
+    val categoryFilterState = _categoryFilterState.asStateFlow()
+
+    fun onSelectCategoryFilter(category: String) {
+        _categoryFilterState.value = category
+    }
+
+    //FIlter reset
+    fun onFilterReset() {
+        _radiusFilterState.value = ""
+        _maxPriceFilterState.value = ""
+        _categoryFilterState.value = ""
+        getData()
+    }
+
+    fun onRefresh() {
+        _isRefreshing.value = true
+        _radiusFilterState.value = ""
+        _maxPriceFilterState.value = ""
+        _categoryFilterState.value = ""
+        _searchQuery.value = ""
+        getData()
+        _isRefreshing.value = false
+    }
+
 
     init {
         viewModelScope.launch {
@@ -66,24 +100,44 @@ class BrowseViewModel @Inject constructor(
         getData()
     }
 
-//    val foodPostList = combine(location, refreshTrigger) { location, _ ->
-//        browseUseCase.invoke(location.latitude, location.longitude)
-//            .cachedIn(viewModelScope)
-//    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-//    fun refreshData() {
-//        refreshTrigger.value = Unit
-//    }
+    private fun getData() {
 
-    fun getData() {
         viewModelScope.launch {
-            browseUseCase.invoke(location.value.latitude, location.value.longitude)
+            _loadingState.value = true
+            browseUseCase.invoke(
+                location.value.latitude,
+                location.value.longitude,
+                _searchQuery.value,
+                _categoryFilterState.value,
+                formatRadiusString(_radiusFilterState.value),
+                _maxPriceFilterState.value
+            )
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _foodPostList.value = it
                 }
+            _loadingState.value = false
         }
     }
-//    val foodPostList = browseUseCase.invoke(location.value.latitude,location.value.longitude).cachedIn(viewModelScope)
+
+    fun applyFilter() {
+        getData()
+    }
+
+    fun search(s: String){
+        _searchQuery.value = s
+        getData()
+    }
+
+    private fun filterNumericInput(input: String): String {
+        return input.filter { it.isDigit() }
+    }
+
+    private fun formatRadiusString(radius: String): String {
+       if(radius == "") return ""
+        val r = filterNumericInput(radius).toInt() * 1000
+        return r.toString()
+    }
 
 }

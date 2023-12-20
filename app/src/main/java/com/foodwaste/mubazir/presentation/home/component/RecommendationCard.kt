@@ -1,9 +1,12 @@
 package com.foodwaste.mubazir.presentation.home.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +26,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +44,7 @@ import coil.compose.AsyncImage
 import com.foodwaste.mubazir.R
 import com.foodwaste.mubazir.presentation.common.LocationUtils
 import com.foodwaste.mubazir.presentation.common.PriceUtils
+import com.foodwaste.mubazir.presentation.common.component.shimmerBrush
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,12 +72,18 @@ fun RecommendationCard(
             contentAlignment = Alignment.TopStart
         ) {
 
+            var imgLoading by remember { mutableStateOf(true) }
+
             AsyncImage(
                 model = imageUrl,
                 contentDescription = title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(shimmerBrush(showShimmer = imgLoading)),
+                onSuccess = {
+                    imgLoading = false
+                },
             )
 
             Badge(
@@ -134,14 +148,44 @@ fun RecommendationCard(
 
 }
 
-//@Preview
-//@Composable
-//fun RecommendationCardPreview() {
-//    RecommendationCard(
-//        onClickCard = {},
-//        category = 1,
-//        title = "Donut",
-//        distance = 1,
-//        price = 10000
-//    )
-//}
+
+@Composable
+fun ShimmerRecommendationCard() {
+    Column(
+        modifier = Modifier
+            .width(250.dp)
+            .height(200.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(shimmerBrush(showShimmer = true)),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(shimmerBrush(showShimmer = true)),
+            contentAlignment = Alignment.TopStart
+        ) {
+
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Spacer(modifier = Modifier.defaultMinSize(minHeight = 8.dp, minWidth = 20.dp).background(shimmerBrush(showShimmer = true)))
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Spacer(modifier = Modifier.defaultMinSize(minHeight = 5.dp, minWidth = 10.dp).background(shimmerBrush(showShimmer = true)))
+                Spacer(modifier = Modifier.defaultMinSize(minHeight = 8.dp, minWidth = 25.dp).background(shimmerBrush(showShimmer = true)))
+            }
+
+        }
+    }
+
+}

@@ -9,10 +9,12 @@ import com.foodwaste.mubazir.presentation.browse.BrowseScreen
 import com.foodwaste.mubazir.presentation.detail.DetailScreen
 import com.foodwaste.mubazir.presentation.home.HomeScreen
 import com.foodwaste.mubazir.presentation.maps.MapsScreen
+import com.foodwaste.mubazir.presentation.myfoodpost.MyFoodPostScreen
 import com.foodwaste.mubazir.presentation.notification.NotificationScreen
 import com.foodwaste.mubazir.presentation.profile.ProfileScreen
 import com.foodwaste.mubazir.presentation.signin.SignInScreen
 import com.foodwaste.mubazir.presentation.signup.SignUpScreen
+import com.foodwaste.mubazir.presentation.userprofile.UserProfileScreen
 
 
 sealed class Route(protected val route: String) {
@@ -118,6 +120,26 @@ sealed class Route(protected val route: String) {
 
         operator fun invoke(id: String) = "detail/$id"
 
+    }
+
+    object UserProfile : Route("user_profile") {
+
+        context(NavGraphBuilder)
+        fun composable() = composable(route) {
+            UserProfileScreen(LocalNavController.current)
+        }
+
+        operator fun invoke() = "user_profile"
+    }
+
+    object MyFoodPost : Route("my_food_post") {
+
+        context(NavGraphBuilder)
+        fun composable() = composable(route) {
+            MyFoodPostScreen(LocalNavController.current)
+        }
+
+        operator fun invoke() = "my_food_post"
     }
 
     companion object {

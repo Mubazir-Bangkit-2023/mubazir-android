@@ -23,6 +23,8 @@ fun NavGraph(
         Route.SignIn.composable()
         Route.SignUp.composable()
         Route.Detail.composable()
+        Route.UserProfile.composable()
+        Route.MyFoodPost.composable()
     }
 }
 

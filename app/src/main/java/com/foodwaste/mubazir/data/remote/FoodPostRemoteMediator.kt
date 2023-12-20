@@ -17,6 +17,10 @@ import kotlinx.coroutines.withContext
 class FoodPostRemoteMediator(
     private val lat: Double,
     private val lon: Double,
+    private val search: String?,
+    private val category: String?,
+    private val radius: String?,
+    private val price: String?,
     private val foodPostService: FoodPostService,
     private val foodPostDatabase: FoodPostDatabase
 ): RemoteMediator<Int, FoodPostEntity>() {
@@ -52,7 +56,16 @@ class FoodPostRemoteMediator(
         }
 
         try {
-            val response = foodPostService.getFoodPosts(page = page, limit = state.config.pageSize, lat = lat, lon = lon)
+            val response = foodPostService.getFoodPosts(
+                page = page,
+                limit = state.config.pageSize,
+                lat = lat,
+                lon = lon,
+                search = search,
+                category = category,
+                radius = radius,
+                price = price,
+            )
             val data = response.body()?.posts ?: emptyList()
             val endOfPaginationReached = data.isEmpty()
 

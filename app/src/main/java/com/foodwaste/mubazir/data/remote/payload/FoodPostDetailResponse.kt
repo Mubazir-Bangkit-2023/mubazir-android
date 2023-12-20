@@ -20,7 +20,7 @@ data class FoodPostDetailResponse(
 	val title: String,
 
 	@field:SerializedName("freshness")
-	val freshness: String,
+	val freshness: String?,
 
 	@field:SerializedName("imgUrl")
 	val imgUrl: String,

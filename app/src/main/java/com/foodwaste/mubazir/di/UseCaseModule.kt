@@ -4,15 +4,24 @@ import com.foodwaste.mubazir.R
 import com.foodwaste.mubazir.domain.repository.FoodPostRepository
 import com.foodwaste.mubazir.domain.repository.UserRepository
 import com.foodwaste.mubazir.domain.usecase.BrowseUseCase
+import com.foodwaste.mubazir.domain.usecase.DarkThemeUseCase
+import com.foodwaste.mubazir.domain.usecase.DeletePostUseCase
 import com.foodwaste.mubazir.domain.usecase.FoodClassificationUseCase
 import com.foodwaste.mubazir.domain.usecase.GetCurrentLocationUseCase
 import com.foodwaste.mubazir.domain.usecase.GetDetailPostUseCase
+import com.foodwaste.mubazir.domain.usecase.GetFoodPostMapViewUseCase
+import com.foodwaste.mubazir.domain.usecase.GetNearbyFoodIngredientsRecommendationUseCase
+import com.foodwaste.mubazir.domain.usecase.GetNearbyHomeFoodRecommendationUseCase
+import com.foodwaste.mubazir.domain.usecase.GetNearbyRecommendationUseCase
+import com.foodwaste.mubazir.domain.usecase.GetNearbyRestaurantRecommendationUseCase
 import com.foodwaste.mubazir.domain.usecase.GetStoredLocationUseCase
+import com.foodwaste.mubazir.domain.usecase.GetUserPostsUseCase
 import com.foodwaste.mubazir.domain.usecase.GetUserUseCase
 import com.foodwaste.mubazir.domain.usecase.SetStoredLocationUseCase
 import com.foodwaste.mubazir.domain.usecase.SignInUseCase
 import com.foodwaste.mubazir.domain.usecase.SignOutUseCase
 import com.foodwaste.mubazir.domain.usecase.SignUpUseCase
+import com.foodwaste.mubazir.domain.usecase.UploadFoodPostUseCase
 import com.foodwaste.mubazir.domain.usecase.ValidateEmailUseCase
 import com.foodwaste.mubazir.domain.usecase.ValidateNameUseCase
 import com.foodwaste.mubazir.domain.usecase.ValidatePasswordUseCase
@@ -129,5 +138,58 @@ object UseCaseModule {
         return GetDetailPostUseCase(foodPostRepository)
     }
 
+    @Provides
+    @ViewModelScoped
+    fun provideUploadFoodPostUseCase(foodPostRepository: FoodPostRepository, userRepository: UserRepository): UploadFoodPostUseCase {
+        return UploadFoodPostUseCase(foodPostRepository, userRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetNearbyRecommendationUseCase(foodPostRepository: FoodPostRepository): GetNearbyRecommendationUseCase {
+        return GetNearbyRecommendationUseCase(foodPostRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetNearbyRestaurantRecommendationUseCase(foodPostRepository: FoodPostRepository): GetNearbyRestaurantRecommendationUseCase {
+        return GetNearbyRestaurantRecommendationUseCase(foodPostRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetNearbyHomeFoodRecommendationUseCase(foodPostRepository: FoodPostRepository): GetNearbyHomeFoodRecommendationUseCase {
+        return GetNearbyHomeFoodRecommendationUseCase(foodPostRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetNearbyFoodIngredientsRecommendationUseCase(foodPostRepository: FoodPostRepository): GetNearbyFoodIngredientsRecommendationUseCase {
+        return GetNearbyFoodIngredientsRecommendationUseCase(foodPostRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideDarkThemeUseCase(userRepository: UserRepository): DarkThemeUseCase {
+        return DarkThemeUseCase(userRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetFoodPostMapViewUseCase(foodPostRepository: FoodPostRepository): GetFoodPostMapViewUseCase {
+        return GetFoodPostMapViewUseCase(foodPostRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetUserPostsUseCase(userRepository: UserRepository): GetUserPostsUseCase {
+        return GetUserPostsUseCase(userRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideDeletePostUseCase(foodPostRepository: FoodPostRepository, userRepository: UserRepository) : DeletePostUseCase {
+        return DeletePostUseCase(foodPostRepository, userRepository)
+    }
 
 }

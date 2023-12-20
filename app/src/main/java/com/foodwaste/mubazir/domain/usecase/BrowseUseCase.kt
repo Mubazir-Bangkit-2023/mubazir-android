@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
 class BrowseUseCase(
     private val foodPostRepository: FoodPostRepository
 ) {
-    operator fun invoke(lat: Double, lon: Double): Flow<PagingData<FoodPost>> = foodPostRepository.browse(lat, lon)
+    operator fun invoke(lat: Double, lon: Double, search: String?, category: String?, radius: String?, price: String?): Flow<PagingData<FoodPost>> = foodPostRepository.browse(lat, lon, search, category, radius, price)
 }

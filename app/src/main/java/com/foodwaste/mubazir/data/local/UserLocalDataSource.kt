@@ -27,4 +27,12 @@ class UserLocalDataSource(
     fun getStoredLocation(): Flow<Location?> {
         return userPreferences.getStoredLocation()
     }
+
+    suspend fun setDarkTheme(isDarkTheme: Boolean?) {
+        userPreferences.setDarkTheme(isDarkTheme)
+    }
+
+    fun getDarkTheme(): Flow<Boolean?> {
+        return userPreferences.getDarkTheme()
+    }
 }

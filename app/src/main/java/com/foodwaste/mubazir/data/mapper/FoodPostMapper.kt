@@ -36,6 +36,20 @@ fun FoodPostEntity.toModel(): FoodPost {
     )
 }
 
+fun FoodPostResponse.toModel(): FoodPost {
+    return FoodPost(
+        id = id,
+        title = title,
+        description = description,
+        price = price,
+        imageUrl = imgUrl,
+        distance = distance,
+        lon = lon,
+        lat = lat,
+        categoryId = categoryId,
+    )
+}
+
 fun FoodPostDetailResponse.toModel(): FoodPostDetail {
     return FoodPostDetail(
         id = id,

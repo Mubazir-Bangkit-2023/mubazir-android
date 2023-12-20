@@ -8,7 +8,8 @@ import java.util.Date
 import java.util.Locale
 
 object TimeUtils {
-    fun formatSelectedDate(timestamp: Long): String {
+    fun formatSelectedDate(date: Long): String {
+        val timestamp = date * 1000
         val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         return sdf.format(Date(timestamp))
     }

@@ -4,8 +4,6 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -35,9 +33,9 @@ object LocationUtils {
             var kota = ""
 
             try {
-                val addresses: MutableList<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+                @Suppress("DEPRECATION") val addresses: MutableList<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
 
-                if (addresses != null && addresses.isNotEmpty()) {
+                if (!addresses.isNullOrEmpty()) {
                     val address = addresses[0]
 
                     kelurahan = address.subLocality ?: ""

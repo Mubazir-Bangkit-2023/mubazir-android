@@ -1,5 +1,6 @@
 package com.foodwaste.mubazir.data.remote
 
+import com.foodwaste.mubazir.data.remote.payload.FoodPostDetailResponse
 import com.foodwaste.mubazir.data.remote.payload.SignInRequest
 import com.foodwaste.mubazir.data.remote.payload.SignUpRequest
 import com.foodwaste.mubazir.data.remote.payload.MessageResponse
@@ -31,6 +32,14 @@ class UserRemoteDataSource(
         return data ?: throw RuntimeException("Response body is empty")
     }
 
+    suspend fun getUserPosts(token: String) : List<FoodPostDetailResponse> {
+        val res = userService.getUserPosts(token)
+        val data = res.takeIf { it.isSuccessful }?.body()?.posts
+        if (data == null) {
+            res.errorBody()?.let { throw RuntimeException(it.getErrorMessage()) }
+        }
+        return data ?: throw RuntimeException("Response body is empty")
+    }
 }
 
 fun ResponseBody.getErrorMessage(key: String = "data"): String {

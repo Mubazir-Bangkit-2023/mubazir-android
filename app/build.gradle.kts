@@ -43,6 +43,12 @@ android {
         }
 
         release {
+            val baseUrl : String = gradleLocalProperties(rootDir).getProperty("backend_base_url")
+            buildConfigField("String", "BACKEND_BASE_URL", "\"$baseUrl\"")
+
+            val mlModelBaseUrl : String = gradleLocalProperties(rootDir).getProperty("ml_model_url")
+            buildConfigField("String", "ML_MODEL_BASE_URL", "\"$mlModelBaseUrl\"")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -137,6 +143,9 @@ dependencies {
 
     //Lottie
     implementation("com.airbnb.android:lottie-compose:6.0.1")
+
+    //splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
 
     //test
     testImplementation("junit:junit:4.13.2")

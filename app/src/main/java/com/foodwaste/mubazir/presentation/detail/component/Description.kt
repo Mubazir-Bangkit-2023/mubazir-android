@@ -4,10 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,7 +18,7 @@ import com.foodwaste.mubazir.R
 @Composable
 fun Description(
     description: String,
-    modifier: Modifier = Modifier
+
 ) {
     val (isExpanded, setExpanded) = remember { mutableStateOf(description.length < 270) }
 

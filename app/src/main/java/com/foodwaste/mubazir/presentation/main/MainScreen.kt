@@ -119,8 +119,10 @@ fun MainScreen(
                     exit = fadeOut() + slideOutVertically()
                 ) {
                     NavGraph(
-                        startDestination = if (isLoggedIn == true) Route.Home() else Route.SignIn(),
-//                        startDestination = Route.Detail("mubazir-1234"),
+                        startDestination = when (isLoggedIn) {
+                            true -> Route.Home()
+                            else -> Route.SignIn()
+                        },
                         navController = navController
                     )
                 }

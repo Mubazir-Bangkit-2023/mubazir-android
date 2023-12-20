@@ -2,8 +2,6 @@ package com.foodwaste.mubazir.di
 
 import android.app.Application
 import android.content.Context
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module

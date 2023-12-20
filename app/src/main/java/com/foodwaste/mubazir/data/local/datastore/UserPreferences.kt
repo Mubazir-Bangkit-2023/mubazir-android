@@ -3,6 +3,7 @@ package com.foodwaste.mubazir.data.local.datastore
 import android.location.Location
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.foodwaste.mubazir.data.local.entity.UserEntity
@@ -63,6 +64,22 @@ class UserPreferences(
         }
     }
 
+    suspend fun setDarkTheme(isDarkTheme: Boolean?) {
+        dataStore.edit { mutablePreferences ->
+            if (isDarkTheme != null) {
+                mutablePreferences[KeyDarkTheme] = isDarkTheme
+                return@edit
+            }
+            mutablePreferences.remove(KeyDarkTheme)
+        }
+    }
+
+    fun getDarkTheme(): Flow<Boolean> {
+        return dataStore.data.map { preferences ->
+            preferences[KeyDarkTheme] ?: false
+        }
+    }
+
     companion object {
         private val KeyUserId = stringPreferencesKey("user_id")
         private val KeyUserEmail = stringPreferencesKey("user_email")
@@ -72,5 +89,6 @@ class UserPreferences(
         private val KeyUserToken = stringPreferencesKey("user_token")
         private val KeyLatitude = stringPreferencesKey("latitude")
         private val KeyLongitude = stringPreferencesKey("longitude")
+        private val KeyDarkTheme = booleanPreferencesKey("dark_theme")
     }
 }

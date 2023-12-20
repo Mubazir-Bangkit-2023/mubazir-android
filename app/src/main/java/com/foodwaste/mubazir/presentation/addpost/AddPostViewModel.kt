@@ -11,16 +11,16 @@ import com.foodwaste.mubazir.domain.usecase.FoodClassificationUseCase
 import com.foodwaste.mubazir.domain.usecase.GetCurrentLocationUseCase
 import com.foodwaste.mubazir.domain.usecase.GetStoredLocationUseCase
 import com.foodwaste.mubazir.domain.usecase.SetStoredLocationUseCase
+import com.foodwaste.mubazir.domain.usecase.UploadFoodPostUseCase
 import com.foodwaste.mubazir.presentation.common.ImageUtils
 import com.foodwaste.mubazir.presentation.common.LocationUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
@@ -36,8 +36,19 @@ class AddPostViewModel @Inject constructor(
     private val foodClassificationUseCase: FoodClassificationUseCase,
     private val getStoredLocationUseCase: GetStoredLocationUseCase,
     private val setStoredLocationUseCase: SetStoredLocationUseCase,
-    private val getCurrentLocationUseCase: GetCurrentLocationUseCase
+    private val getCurrentLocationUseCase: GetCurrentLocationUseCase,
+    private val uploadFoodPostUseCase: UploadFoodPostUseCase
 ) : ViewModel() {
+
+    private val _snackbar = MutableSharedFlow<String>()
+    val snackbar = _snackbar.asSharedFlow()
+
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState = _loadingState
+
+    private val _uploadSuccessEvent = MutableStateFlow(false)
+    val uploadSuccessEvent get() = _uploadSuccessEvent
+
 
     private val _uri = MutableStateFlow<Uri?>(Uri.EMPTY)
     val uri = _uri
@@ -102,7 +113,7 @@ class AddPostViewModel @Inject constructor(
     }
 
     fun onConfirmDatePicker(date: Long) {
-        _datePickerState.value = date
+        _datePickerState.value = date / 1000
     }
 
     fun onConfirmTimePicker(time: Int) {
@@ -211,8 +222,58 @@ class AddPostViewModel @Inject constructor(
         initialValue = false
     )
 
+    fun upload() {
+        viewModelScope.launch(dispatcher) {
+            if (!fulFilled.value) {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.text_fill_all_fields),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@launch
+            }
+            _loadingState.value = true
+            val imageFile = _uri.value?.let { ImageUtils.uriToFile(it, context) }
+            val requestImageFile = imageFile?.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody =
+                requestImageFile?.let { req ->
+                    MultipartBody.Part.createFormData(
+                        "image", imageFile.name,
+                        req
+                    )
+                }
+            val price = filterNumericInput(_priceFieldState.value).toInt()
+            val timePickUp = _datePickerState.value + _timePickerState.value.toLong()
 
-    //filter input for price
+            uploadFoodPostUseCase.invoke(
+                title = _titleFieldState.value,
+                categoryId = _categoryId.value.toString(),
+                freshness = if(_freshnessState.value == "") null else _freshnessState.value,
+                price = price.toString(),
+                pickupTime = timePickUp.toString(),
+                lat = _location.value?.latitude.toString(),
+                lon = _location.value?.longitude.toString(),
+                description = _descriptionFieldState.value,
+                image = multipartBody!!
+            ).fold(
+                onSuccess = {
+                    _loadingState.value = false
+                    _uploadSuccessEvent.value = true
+                    _snackbar.emit(context.getString(R.string.text_upload_success))
+                },
+                onFailure = {
+                    _loadingState.value = false
+                    _snackbar.emit(context.getString(R.string.text_upload_failed))
+                    Timber.e(it)
+                }
+            )
+        }
+    }
+
+    fun resetUploadSuccessEvent() {
+        _uploadSuccessEvent.value = false
+    }
+
     private fun filterNumericInput(input: String): String {
         return input.filter { it.isDigit() }
     }

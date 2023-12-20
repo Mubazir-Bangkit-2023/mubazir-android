@@ -8,11 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FoodBank
-import androidx.compose.material.icons.outlined.HomeWork
 import androidx.compose.material.icons.outlined.RestaurantMenu
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon

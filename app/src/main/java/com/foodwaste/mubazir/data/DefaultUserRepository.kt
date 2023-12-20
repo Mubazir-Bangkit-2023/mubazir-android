@@ -8,6 +8,7 @@ import com.foodwaste.mubazir.data.remote.UserRemoteDataSource
 import com.foodwaste.mubazir.data.remote.payload.SignInRequest
 import com.foodwaste.mubazir.data.remote.payload.SignUpRequest
 import com.foodwaste.mubazir.data.remote.payload.MessageResponse
+import com.foodwaste.mubazir.domain.model.FoodPostDetail
 import com.foodwaste.mubazir.domain.model.User
 import com.foodwaste.mubazir.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
@@ -43,6 +44,14 @@ class DefaultUserRepository(
         return res.toModel()
     }
 
+    override suspend fun getUserPost(token: String): List<FoodPostDetail> {
+        val res = userRemoteDataSource.getUserPosts(token)
+        val posts = res.map {
+            it.toModel()
+        }
+        return posts
+    }
+
     override fun getUser(): Flow<User?> {
         return userLocalDataSource.getUser().map { it?.toModel() }
     }
@@ -57,5 +66,13 @@ class DefaultUserRepository(
 
     override suspend fun getStoredLocation(): Flow<Location?> {
         return userLocalDataSource.getStoredLocation()
+    }
+
+    override suspend fun setDarkTheme(isDarkTheme: Boolean?) {
+        userLocalDataSource.setDarkTheme(isDarkTheme)
+    }
+
+    override fun getDarkTheme(): Flow<Boolean?> {
+        return userLocalDataSource.getDarkTheme()
     }
 }

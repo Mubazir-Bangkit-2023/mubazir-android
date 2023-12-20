@@ -1,6 +1,5 @@
 package com.foodwaste.mubazir.presentation.browse.component
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
@@ -25,6 +24,7 @@ fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit,
+    onSearch : (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -36,6 +36,7 @@ fun SearchBar(
         onSearch = {
             keyboardController?.hide()
             focusManager.clearFocus()
+            onSearch(it)
         },
         active = false,
         onActiveChange = {newActiveState ->
