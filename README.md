@@ -1,8 +1,11 @@
 # Mubazir
 
-<p align="center">
-  [App Demo](https://youtu.be/rIC7kYwE3y8)
-</p>
+<div align="center">
+  [![App Demo](https://img.youtube.com/vi/rIC7kYwE3y8/hqdefault.jpg)](https://www.youtube.com/embed/rIC7kYwE3y8)
+
+[<img src="https://img.youtube.com/vi/rIC7kYwE3y8/hqdefault.jpg" width="600" height="300"
+/>](https://www.youtube.com/embed/rIC7kYwE3y8)
+</div>
 
 ## Installation 🔨
 Clone this repository and import into **Android Studio**
